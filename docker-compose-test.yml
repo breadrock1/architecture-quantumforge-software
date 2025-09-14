@@ -1,0 +1,57 @@
+name: 'quantumforge-test'
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    networks:
+      - quantumforge-net
+    ports:
+      - '6333:6333'
+      - '6334:6334'
+    volumes:
+      - 'qdrant-vol:/qdrant/storage'
+    environment:
+      # Disable authentication for simplicity in development.
+      # NOT recommended for production!
+      - QDRANT__SERVICE__API_KEY= # Leave empty for no auth
+      - QDRANT__SERVICE__ENABLE_API_KEY=false
+
+  ollama:
+    image: ollama/ollama:0.11.11-rc2-rocm
+    restart: unless-stopped
+    networks:
+      - quantumforge-net
+    ports:
+      - '11434:11434'
+    volumes:
+      - 'ollama-vol:/root/.ollama'
+    deploy:
+      resources:
+        limits:
+          memory: '4G'
+
+  embeddings:
+    image: jgquiroga/hugging-face-text-embedding:v0.4.0
+    restart: unless-stopped
+    networks:
+      - quantumforge-net
+    ports:
+      - '3242:80'
+    deploy:
+      resources:
+        limits:
+          memory: '2G'
+
+networks:
+  quantumforge-net:
+    name: quantumforge-net
+    driver: bridge
+
+volumes:
+  ollama-vol:
+    name: quantumforge-test-ollama-vol
+    driver: local
+  qdrant-vol:
+    name: quantumforge-test-qdrant-vol
+    driver: local
