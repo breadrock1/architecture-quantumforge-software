@@ -1,0 +1,21 @@
+[logger]
+level = "debug"
+
+[server.http]
+address = "0.0.0.0:2891"
+
+[llm.openai]
+api_key = "no"
+base_url = "http://localhost:11434"
+model_name = "TinyLlama"
+
+[storage.qdrant]
+address = "http://localhost:6333"
+api_key = "api_key"
+collection = "game-of-thrones"
+dimension = 384
+
+[tokenize.bge]
+address = "http://localhost:3242"
+is_truncate = "false"
+is_normalize = "false"
